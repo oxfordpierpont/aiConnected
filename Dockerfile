@@ -7,16 +7,27 @@ RUN apk add --no-cache libc6-compat
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack prepare pnpm@10.18.3 --activate
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=bun /usr/local/bin/bunx /usr/local/bin/bunx
+
+FROM base AS pruner
+WORKDIR /app
+COPY docs ./docs
+
+WORKDIR /app/docs
+RUN pnpm dlx turbo@2.9.6 prune docs --docker --out-dir /app/pruned
 
 FROM base AS builder
 WORKDIR /app/docs
 
-COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
-COPY --from=bun /usr/local/bin/bunx /usr/local/bin/bunx
-
-COPY docs/ ./
-
+COPY --from=pruner /app/pruned/json/ ./
+COPY --from=pruner /app/pruned/pnpm-lock.yaml ./pnpm-lock.yaml
 RUN pnpm install --frozen-lockfile
+
+COPY --from=pruner /app/pruned/full/ ./
+COPY docs/examples ./examples
+COPY docs/packages/base-ui ./packages/base-ui
+COPY docs/packages/shared ./packages/shared
 RUN pnpm turbo run build --filter=docs...
 
 RUN mkdir -p /app/runtime/apps/docs/.next
