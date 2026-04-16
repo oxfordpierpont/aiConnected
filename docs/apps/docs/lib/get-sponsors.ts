@@ -14,7 +14,7 @@ interface SponsorEntity {
 
 interface Tier {
   monthlyPriceInDollars: number;
-  name?: string;
+  name?: string | null;
 }
 
 export const revalidate = 60 * 30;
@@ -34,8 +34,8 @@ export async function getSponsors(owner: string): Promise<Sponsor[]> {
       user: {
         sponsorshipsAsMaintainer: {
           nodes: Array<{
-            sponsorEntity: SponsorEntity;
-            tier: Tier;
+            sponsorEntity: SponsorEntity | null;
+            tier: Tier | null;
           }>;
         };
       };
@@ -69,16 +69,22 @@ export async function getSponsors(owner: string): Promise<Sponsor[]> {
       }
     `);
 
-    const sponsors = response.user.sponsorshipsAsMaintainer.nodes.map((node) => ({
-      ...node.sponsorEntity,
-      name: node.sponsorEntity.name || node.sponsorEntity.login,
-      tier: node.tier,
-    }));
+    const sponsors = response.user.sponsorshipsAsMaintainer.nodes
+      .map((node) => {
+        if (!node.sponsorEntity || node.tier?.monthlyPriceInDollars == null) return null;
+
+        return {
+          ...node.sponsorEntity,
+          name: node.sponsorEntity.name || node.sponsorEntity.login,
+          tier: node.tier,
+        };
+      })
+      .filter((sponsor): sponsor is Sponsor => sponsor !== null);
 
     // Sort sponsors by tier price in descending order
     return sponsors.sort((a, b) => b.tier.monthlyPriceInDollars - a.tier.monthlyPriceInDollars);
   } catch (error) {
     console.error('Error fetching sponsors:', error);
-    throw error;
+    return [];
   }
 }

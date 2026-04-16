@@ -1,6 +1,8 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": [
+    "SITE_URL",
+    "NEXT_PUBLIC_APP_URL",
     "NEXT_PUBLIC_ORAMA_DATASOURCE_ID",
     "NEXT_PUBLIC_ORAMA_PROJECT_ID",
     "NEXT_PUBLIC_ORAMA_API_KEY",

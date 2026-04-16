@@ -1,20 +1,20 @@
 import { Feed } from 'feed';
 import { blog } from '@/lib/source';
+import { baseUrl } from '@/lib/metadata';
 import { NextResponse } from 'next/server';
 
 export const revalidate = false;
 
-const baseUrl = 'https://fumadocs.dev';
-
 export function GET() {
+  const siteUrl = baseUrl.toString().replace(/\/$/, '');
   const feed = new Feed({
     title: 'Fumadocs Blog',
-    id: `${baseUrl}/blog`,
-    link: `${baseUrl}/blog`,
+    id: `${siteUrl}/blog`,
+    link: `${siteUrl}/blog`,
     language: 'en',
 
-    image: `${baseUrl}/banner.png`,
-    favicon: `${baseUrl}/icon.png`,
+    image: `${siteUrl}/banner.png`,
+    favicon: `${siteUrl}/icon.png`,
     copyright: 'All rights reserved 2025, Fuma Nama',
   });
 
@@ -25,7 +25,7 @@ export function GET() {
       id: page.url,
       title: page.data.title,
       description: page.data.description,
-      link: `${baseUrl}${page.url}`,
+      link: `${siteUrl}${page.url}`,
       date: new Date(page.data.date),
 
       author: [

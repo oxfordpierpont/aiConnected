@@ -1,13 +1,18 @@
 import createBundleAnalyzer from '@next/bundle-analyzer';
 import { createMDX } from 'fumadocs-mdx/next';
+import { fileURLToPath } from 'node:url';
 import type { NextConfig } from 'next';
 
 const withAnalyzer = createBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
+const workspaceRoot = fileURLToPath(new URL('../..', import.meta.url));
+
 const config: NextConfig = {
   reactStrictMode: true,
+  output: 'standalone',
+  outputFileTracingRoot: workspaceRoot,
   logging: {
     fetches: {
       fullUrl: true,

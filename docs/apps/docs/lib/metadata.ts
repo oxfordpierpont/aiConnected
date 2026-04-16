@@ -1,13 +1,27 @@
 import type { Metadata } from 'next/types';
 import { Page } from './source';
 
+function getConfiguredBaseUrl(): URL {
+  const configured =
+    process.env.SITE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
+  if (!configured) return new URL('http://localhost:3000');
+  if (configured.startsWith('http://') || configured.startsWith('https://')) {
+    return new URL(configured);
+  }
+
+  return new URL(`https://${configured}`);
+}
+
 export function createMetadata(override: Metadata): Metadata {
   return {
     ...override,
     openGraph: {
       title: override.title ?? undefined,
       description: override.description ?? undefined,
-      url: 'https://fumadocs.dev',
+      url: baseUrl.toString(),
       images: '/banner.png',
       siteName: 'Fumadocs',
       ...override.openGraph,
@@ -25,7 +39,7 @@ export function createMetadata(override: Metadata): Metadata {
         'application/rss+xml': [
           {
             title: 'Fumadocs Blog',
-            url: 'https://fumadocs.dev/blog/rss.xml',
+            url: new URL('/blog/rss.xml', baseUrl).toString(),
           },
         ],
       },
@@ -43,7 +57,4 @@ export function getPageImage(page: Page) {
   };
 }
 
-export const baseUrl =
-  process.env.NODE_ENV === 'development' || !process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? new URL('http://localhost:3000')
-    : new URL(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
+export const baseUrl = getConfiguredBaseUrl();

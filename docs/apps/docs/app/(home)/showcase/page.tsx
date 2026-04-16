@@ -2,7 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import Image, { type StaticImageData } from 'next/image';
 import { cn } from '@/lib/cn';
 import { buttonVariants } from '@/components/ui/button';
-import { createMetadata } from '@/lib/metadata';
+import { baseUrl, createMetadata } from '@/lib/metadata';
 import Expostarter from '@/public/showcases/expostarter.png';
 import Sunar from '@/public/showcases/sunar.png';
 import OpenPanel from '@/public/showcases/openpanel.png';
@@ -21,7 +21,7 @@ export const metadata = createMetadata({
   title: 'Showcase',
   description: 'Some cool websites using Fumadocs',
   openGraph: {
-    url: 'https://fumadocs.dev/showcase',
+    url: new URL('/showcase', baseUrl).toString(),
   },
 });
 
