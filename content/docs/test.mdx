@@ -1,0 +1,15 @@
+---
+title: Getting Started
+description: The first editable page in the AI Connected docs
+---
+
+## Editing content
+
+Every file in `content/docs` becomes part of your documentation tree.
+
+## Deployment notes
+
+- The app is built with the official Next.js plus MDX Fumadocs template.
+- Dokploy runs the root `Dockerfile` using Next standalone output.
+- The older upstream `docs/` monorepo stays in this repository for reference,
+  but it is excluded from the Docker build context.
