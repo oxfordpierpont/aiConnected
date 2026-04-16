@@ -1,5 +1,7 @@
 # syntax=docker.io/docker/dockerfile:1.7
 
+FROM oven/bun:1.2.15-alpine AS bun
+
 FROM node:22-alpine AS base
 RUN apk add --no-cache libc6-compat
 ENV PNPM_HOME="/pnpm"
@@ -8,6 +10,9 @@ RUN corepack enable && corepack prepare pnpm@10.18.3 --activate
 
 FROM base AS builder
 WORKDIR /app/docs
+
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=bun /usr/local/bin/bunx /usr/local/bin/bunx
 
 COPY docs/ ./
 
