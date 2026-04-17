@@ -1,11 +1,22 @@
 .git
+.gitignore
 .DS_Store
 
+# Next.js build output
 .next
-node_modules
 out
-build
+
+# Dependencies (rebuilt inside Docker)
+node_modules
+
+# Local dev / test artifacts
 coverage
 .source
 
+# Docs subdirectory (Fumadocs source repo, not the app)
 docs
+
+# Docker files themselves
+Dockerfile
+docker-compose.yml
+.dockerignore
