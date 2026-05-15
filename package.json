@@ -5,7 +5,6 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "prebuild": "fumadocs-mdx",
     "postinstall": "fumadocs-mdx",
     "start": "next start",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit"
@@ -28,7 +27,6 @@
     "@types/react-dom": "^19.2.3",
     "postcss": "^8.5.9",
     "tailwindcss": "^4.2.2",
-    "typescript": "^6.0.2",
-    "vite": "^7.3.3"
+    "typescript": "^6.0.2"
   }
 }
